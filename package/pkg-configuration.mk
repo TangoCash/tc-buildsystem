@@ -20,7 +20,7 @@ BS_PACKAGE_FFMPEG_FFPROBE ?= y
 BS_PACKAGE_NCURSES_WCHAR ?= y
 
 # neutrino: which neutrino to build
-BS_PACKAGE_NEUTRINO_FLAVOUR ?= ni
+BS_PACKAGE_NEUTRINO_FLAVOUR ?= tc
 ifeq ($(filter $(BS_PACKAGE_NEUTRINO_FLAVOUR),ni tc tuxbox),)
   $(error BS_PACKAGE_NEUTRINO_FLAVOUR must be ni, tc or tuxbox, not '$(BS_PACKAGE_NEUTRINO_FLAVOUR)')
 endif
