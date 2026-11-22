@@ -29,7 +29,7 @@ NEUTRINO_BIN_TARGET_FINALIZE_HOOKS += NEUTRINO_BIN_STRIP
 # exclusions as target-rootfs.mk, applied to $(TARGET_DIR))
 define NEUTRINO_BIN_STRIP_ROOTFS
 	@echo "Stripping installed binaries and libraries";
-	for dir in $(base_bindir) $(base_sbindir) $(bindir) $(sbindir) /usr/share/tuxbox/neutrino/plugins; do \
+	for dir in $(base_bindir) $(base_sbindir) $(bindir) $(sbindir) $(libexecdir) /usr/share/tuxbox/neutrino/plugins; do \
 		$(INSTALL) -d $(TARGET_DIR)$${dir}; \
 		find $(TARGET_DIR)$${dir} \
 			-type f -print0 | xargs -n 128 -0 $(TARGET_STRIP) || true; \
