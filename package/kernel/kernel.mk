@@ -256,6 +256,11 @@ kernel.do_prepare: | $(DEPS_DIR) $(BUILD_DIR)
 	$(MKDIR)/$(KERNEL_OBJ)
 	$(MKDIR)/$(KERNEL_MODULES)
 	$(INSTALL_DATA) $(KERNEL_CONFIG) $(KERNEL_OBJ_DIR)/.config
+# the defconfigs of the subdirboot boxes name the subdirboot initramfs;
+# a single layout boots root= directly, without it
+ifneq ($(IMAGE_LAYOUT),subdirboot)
+	$(SED) 's|^CONFIG_INITRAMFS_SOURCE=.*|CONFIG_INITRAMFS_SOURCE=""|' $(KERNEL_OBJ_DIR)/.config
+endif
 	$(MAKE) -C $(BUILD_DIR)/$(KERNEL_DIR) $(LINUX_KERNEL_MAKE_VARS) silentoldconfig
 ifeq ($(IMAGE_LAYOUT),subdirboot)
 	$(INSTALL_DATA) $(PKG_FILES_DIR)/initramfs-subdirboot.cpio.gz $(KERNEL_OBJ_DIR)

@@ -81,10 +81,12 @@ endif
 IMAGE_SITE = $(NI_SERVER)/$(NI_SUBDIR)
 IMAGE_MD5FILE = $(IMAGE_SNAPSHOT)-$(IMAGE_SUFFIX)$(NEUTRINO_FLAVOUR_TAG).txt
 
+# default layout of the box; config.local (or the command line) may set
+# IMAGE_LAYOUT = single or subdirboot instead
 ifeq ($(BOXMODEL),$(filter $(BOXMODEL),hd51 bre2ze4k h7 hd60 hd61 multibox multiboxse))
-  IMAGE_LAYOUT = subdirboot
+  IMAGE_LAYOUT ?= subdirboot
 else
-  IMAGE_LAYOUT = single
+  IMAGE_LAYOUT ?= single
 endif
 
 IMAGE_BUILD_DIR = $(BUILD_DIR)/image-build
