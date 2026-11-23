@@ -27,6 +27,16 @@ apt-get install libltdl-dev libglib2.0-dev libssl-dev libcurl4-openssl-dev
 
 ```
 
+Zusätzlich für QtWebEngine (openhbbtvbrowser): Node.js, ein 32-Bit-fähiger
+Host-Compiler für den V8-Snapshot von 32-Bit-ARM und die Host-Bibliotheken der
+Chromium-Hilfsprogramme
+```bash
+apt-get install ninja-build nodejs g++-multilib
+```
+```bash
+apt-get install libnss3-dev libjpeg-dev libwebp-dev libdbus-1-dev libasound2-dev
+```
+
 ## 1) Buildsystem initialisieren
 ```bash
 git clone https://github.com/neutrino-images/ni-buildsystem.git
