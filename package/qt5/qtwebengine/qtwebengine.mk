@@ -74,7 +74,8 @@ QTWEBENGINE_ENV = \
 	NINJAFLAGS="-j$(shell nproc)"
 
 # CC_host/CXX_host: host compiler of the host and gn toolchains (the
-# host toolchain patch takes them from qmake, as OE passes them)
+# host toolchain patch takes them from qmake, as OE passes them); gcc and
+# g++ in the wrapper directory add -w
 QTWEBENGINE_QMAKE_OPTS = \
 	QMAKE_PYTHON2=$(HOST_PYTHON_BINARY) \
 	CC_host=gcc \
@@ -119,6 +120,7 @@ define QTWEBENGINE_CROSS_WRAPPER
 		sed "s|@COMPILER@|$(CROSS_DIR)/bin/$$c|" $(PKG_FILES_DIR)/cross-wrapper.in > $(QTWEBENGINE_WRAP_DIR)/$$c; \
 		chmod 755 $(QTWEBENGINE_WRAP_DIR)/$$c; \
 	done
+	$(call QT5_HOST_COMPILER_WRAPPERS,$(QTWEBENGINE_WRAP_DIR))
 	$(INSTALL_EXEC) $(PKG_FILES_DIR)/host-pkg-config.in $(QTWEBENGINE_WRAP_DIR)/host-pkg-config
 	ln -sf $(HOST_PYTHON_BINARY) $(QTWEBENGINE_WRAP_DIR)/python3
 	ln -sf $(HOST_PYTHON_BINARY) $(QTWEBENGINE_WRAP_DIR)/python

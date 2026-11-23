@@ -27,7 +27,7 @@ QTBASE_MKSPEC_DIR = $(PKG_BUILD_DIR)/mkspecs/devices/linux-nibuild-g++
 # -no-libudev: the image runs mdev; libudev-zero (there for chromium) makes
 # the udev device discovery of evdev/eglfs crash at start (pthread_join)
 QTBASE_CONF_OPTS = \
-	-v \
+	-silent \
 	-prefix $(prefix) \
 	-hostprefix $(HOST_DIR) \
 	-headerdir $(prefix)/include/qt5 \
@@ -57,12 +57,21 @@ QTBASE_CONF_OPTS = \
 	-no-sql-mysql -no-sql-psql -no-sql-sqlite \
 	$(QTBASE_GL_OPTS)
 
+# qmake and the bootstrap tools (moc, rcc, ...) are built with the host
+# compiler: wrappers adding -w come first in PATH (the target compiler gets
+# -w from the device mkspec)
+QTBASE_HOST_WRAP_DIR = $(PKG_BUILD_DIR)/host-wrapper
+QTBASE_MAKE_ENV = \
+	PATH=$(QTBASE_HOST_WRAP_DIR):$(PATH)
+
 define QTBASE_CONFIGURE_CMDS
+	$(call QT5_HOST_COMPILER_WRAPPERS,$(QTBASE_HOST_WRAP_DIR))
 	$(INSTALL) -d $(QTBASE_MKSPEC_DIR)
 	sed 's/@EGLFS_DEVICE@/$(QTBASE_EGLFS_DEVICE)/' $(PKG_FILES_DIR)/qmake.conf.in > $(QTBASE_MKSPEC_DIR)/qmake.conf
 	$(INSTALL_DATA) $(PKG_FILES_DIR)/qplatformdefs.h $(QTBASE_MKSPEC_DIR)/qplatformdefs.h
 	$(CD) $(PKG_BUILD_DIR); \
 		$(TARGET_MAKE_ENV) \
+		$(QTBASE_MAKE_ENV) \
 		PKG_CONFIG="$(PKG_CONFIG)" \
 		PKG_CONFIG_LIBDIR="$(PKG_CONFIG_PATH)" \
 		PKG_CONFIG_SYSROOT_DIR="$(PKG_CONFIG_SYSROOT_DIR)" \
