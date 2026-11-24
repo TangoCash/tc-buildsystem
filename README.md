@@ -39,10 +39,10 @@ apt-get install libnss3-dev libjpeg-dev libwebp-dev libdbus-1-dev libasound2-dev
 
 ## 1) Buildsystem initialisieren
 ```bash
-git clone https://github.com/neutrino-images/ni-buildsystem.git
+git clone https://github.com/TangoCash/tc-buildsystem.git
 ```
 ```bash
-cd ni-buildsystem
+cd tc-buildsystem
 ```
 
 ## 2) Archivverzeichnis erstellen
