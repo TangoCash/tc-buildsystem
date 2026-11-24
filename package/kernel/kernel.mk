@@ -366,7 +366,7 @@ kernel-modules-armbox: kernel-armbox
 	$(INSTALL_DATA) $(KERNEL_modulesdir)/modules.builtin $(TARGET_modulesdir)
 	$(INSTALL_DATA) $(KERNEL_modulesdir)/modules.order $(TARGET_modulesdir)
 	$(LINUX_RUN_DEPMOD)
-ifeq ($(BOXSERIES),hd5x hd6x)
+ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd5x hd6x))
 	$(MAKE) rtl8192eu
 	$(MAKE) rtl8812au
 	$(MAKE) rtl8822bu
