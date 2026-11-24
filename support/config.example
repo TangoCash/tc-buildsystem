@@ -60,7 +60,7 @@ MAINTAINER = $(shell whoami)
 #  ni     - ni-neutrino and ni-libstb-hal from neutrino-images
 #  tc     - tc-neutrino and tc-libstb-hal from TangoCash; forks of the NI ones
 #  tuxbox - tuxbox-neutrino and tuxbox-libstb-hal from Tuxbox
-#BS_PACKAGE_NEUTRINO_FLAVOUR = ni
+#BS_PACKAGE_NEUTRINO_FLAVOUR = tc
 
 # Neutrino branch
 #BS_PACKAGE_NEUTRINO_BRANCH = your/branch
