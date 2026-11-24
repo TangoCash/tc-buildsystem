@@ -39,7 +39,9 @@ NEUTRINO_PLUGINS_CONF_OPTS = \
 	\
 	--with-target=cdk \
 	--with-targetprefix=$(prefix) \
-	--with-boxtype=$(BOXTYPE)
+	--with-boxtype=$(BOXTYPE) \
+	\
+	$(BS_NEUTRINO_PLUGINS_CONF_OPTS)
 
 ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd1 hd2))
   NEUTRINO_PLUGINS_CONF_OPTS += --with-boxmodel=$(BOXSERIES)
