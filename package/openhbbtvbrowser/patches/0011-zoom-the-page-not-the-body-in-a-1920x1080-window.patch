@@ -1,0 +1,28 @@
+From: Claude Code <noreply@anthropic.com>
+Subject: [PATCH] zoom the page, not the body, in a 1920x1080 window
+
+The body's CSS zoom left window.innerWidth/innerHeight at 1920x1080 while
+the applications' elements stay in 1280x720: the video window the native
+player gets (element rect against the viewport) covered the top left
+1280x720 only, and the full-screen checks of the video shim never matched.
+QWebEngineView's zoom factor scales the viewport as well, so the page sees
+1280x720 as on the boxes that stretch a 1280x720 window.
+---
+--- a/webview.cpp
++++ b/webview.cpp
+@@ -198,8 +198,13 @@
+ void WebView::loadFinished(bool ok)
+ {
+     if (ok) {
+-        if (size().width() == 1920 && size().height() == 1080)
+-            page()->runJavaScript(QString::fromLatin1("document.body.style.setProperty('zoom', '150%');"));
++        // applications are laid out for 1280x720: a window larger than that
++        // (eglfs_mali, not stretched to the display) zooms the page itself;
++        // CSS zoom on the body would leave the viewport at the window size,
++        // and the native video window, computed from element positions and
++        // the viewport, would come out in 1280x720 of 1920x1080
++        if (size().width() > 1280)
++            setZoomFactor(size().width() / 1280.0);
+ 
+         page()->runJavaScript(QString::fromLatin1("document.body.style.setProperty('overflow', 'hidden');"));
+ 
