@@ -15,6 +15,14 @@ OPENHBBTVBROWSER_DEPENDENCIES = qt5webengine
 # cross_compile turns on EMBEDDED_BUILD (remote control input, no desktop)
 OPENHBBTVBROWSER_QMAKE_OPTS = CONFIG+=cross_compile
 
+# eglfs_mali (hd6x) does not stretch the window to the display as
+# eglfs_nxpl does: open it at the display size there (patch 0004)
+ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd6x))
+OPENHBBTVBROWSER_QMAKE_OPTS += \
+	DEFINES+=EGLFS_DEFAULT_WIDTH=1920 \
+	DEFINES+=EGLFS_DEFAULT_HEIGHT=1080
+endif
+
 OPENHBBTVBROWSER_CONFIGURE_CMDS = $(QT5_QMAKE_CONFIGURE_CMDS)
 
 # the browser, and the neutrino plugin that starts it with the application

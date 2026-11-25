@@ -9,10 +9,10 @@ diff --git a/main.cpp b/main.cpp
 index 6fb7006..ef44522 100644
 --- a/main.cpp
 +++ b/main.cpp
-@@ -64,6 +64,10 @@ int main(int argc, char *argv[])
-         qputenv("QT_QPA_EGLFS_WIDTH", "1280");
+@@ -71,6 +71,10 @@ int main(int argc, char *argv[])
+         qputenv("QT_QPA_EGLFS_WIDTH", QByteArray::number(EGLFS_DEFAULT_WIDTH));
      if (qgetenv("QT_QPA_EGLFS_HEIGHT").isNull())
-         qputenv("QT_QPA_EGLFS_HEIGHT", "720");
+         qputenv("QT_QPA_EGLFS_HEIGHT", QByteArray::number(EGLFS_DEFAULT_HEIGHT));
 +    // neutrino owns the console: Qt would switch its text cursor back on and
 +    // set up screen blanking when the browser quits
 +    if (qgetenv("QT_QPA_PRESERVE_CONSOLE_STATE").isNull())

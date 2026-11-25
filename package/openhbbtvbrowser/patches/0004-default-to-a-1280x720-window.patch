@@ -2,20 +2,29 @@ From: Claude Code <noreply@anthropic.com>
 Subject: [PATCH] default to a 1280x720 window
 
 At 1920x1080 the browser zooms every page to 150%, and applications that
-scale themselves to the window end up larger than the screen.
+scale themselves to the window end up larger than the screen. Boxes whose
+EGL does not stretch the window to the display set EGLFS_DEFAULT_WIDTH and
+EGLFS_DEFAULT_HEIGHT at build time.
 ---
 --- a/main.cpp
 +++ b/main.cpp
-@@ -58,6 +58,12 @@
+@@ -58,6 +58,19 @@
          qputenv("QT_QPA_PLATFORM", "eglfs");
      if (qgetenv("QT_QPA_EGLFS_HIDECURSOR").isNull())
          qputenv("QT_QPA_EGLFS_HIDECURSOR", "1");
-+    // HbbTV applications are made for 1280x720; the window is stretched to
-+    // the display (eglfs_nxpl), the page needs no zoom
++    // HbbTV applications are made for 1280x720; where the window is
++    // stretched to the display (eglfs_nxpl) the page needs no zoom; boxes
++    // whose EGL does not stretch (eglfs_mali) build with the display size
++#ifndef EGLFS_DEFAULT_WIDTH
++#define EGLFS_DEFAULT_WIDTH 1280
++#endif
++#ifndef EGLFS_DEFAULT_HEIGHT
++#define EGLFS_DEFAULT_HEIGHT 720
++#endif
 +    if (qgetenv("QT_QPA_EGLFS_WIDTH").isNull())
-+        qputenv("QT_QPA_EGLFS_WIDTH", "1280");
++        qputenv("QT_QPA_EGLFS_WIDTH", QByteArray::number(EGLFS_DEFAULT_WIDTH));
 +    if (qgetenv("QT_QPA_EGLFS_HEIGHT").isNull())
-+        qputenv("QT_QPA_EGLFS_HEIGHT", "720");
++        qputenv("QT_QPA_EGLFS_HEIGHT", QByteArray::number(EGLFS_DEFAULT_HEIGHT));
      // the browser runs as root, where chromium refuses its sandbox
      if (qgetenv("QTWEBENGINE_DISABLE_SANDBOX").isNull())
          qputenv("QTWEBENGINE_DISABLE_SANDBOX", "1");

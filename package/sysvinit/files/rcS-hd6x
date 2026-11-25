@@ -79,6 +79,9 @@ load_module extra/%(BOXMODEL)_1.ko
 load_module extra/%(BOXMODEL)_2.ko
 load_module extra/%(BOXMODEL)_3.ko
 load_module extra/%(BOXMODEL)_4.ko
+# Mali GPU kernel driver (hd6x-mali-drivers), needed by libMali / EGL;
+# after the vendor modules, as in buildsystem-tangos and oe-alliance
+load_module extra/mali.ko
 
 # show bootlogo
 showiframe.sh bootlogo.m2v

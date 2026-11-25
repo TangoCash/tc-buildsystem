@@ -9,7 +9,7 @@ diff --git a/main.cpp b/main.cpp
 index 32ff26c..6fb7006 100644
 --- a/main.cpp
 +++ b/main.cpp
-@@ -67,6 +67,12 @@ int main(int argc, char *argv[])
+@@ -74,6 +74,12 @@ int main(int argc, char *argv[])
      // the browser runs as root, where chromium refuses its sandbox
      if (qgetenv("QTWEBENGINE_DISABLE_SANDBOX").isNull())
          qputenv("QTWEBENGINE_DISABLE_SANDBOX", "1");
