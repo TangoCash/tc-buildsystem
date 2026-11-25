@@ -18,6 +18,18 @@ $(TARGET_sysconfdir)/fstab:
 $(TARGET_sysconfdir)/group:
 	$(INSTALL_DATA) -D $(SYSCONFDIR_FILES_DIR)/group $(@)
 
+# the box model as default hostname; hostname.init would otherwise build
+# it from the MAC address with ifconfig eth0, which hangs on some boxes
+# early in rcS (seen on the hd60)
+$(TARGET_sysconfdir)/hostname:
+ifeq ($(PERSISTENT_VAR_PARTITION),yes)
+	$(INSTALL) -d $(TARGET_localstatedir)/etc
+	echo $(BOXMODEL) > $(TARGET_localstatedir)/etc/hostname
+else
+	$(INSTALL) -d $(dir $(@))
+	echo $(BOXMODEL) > $(@)
+endif
+
 $(TARGET_sysconfdir)/hosts:
 	$(INSTALL_DATA) -D $(SYSCONFDIR_FILES_DIR)/hosts $(@)
 
@@ -69,6 +81,7 @@ SYSCONFDIR_DEPENDENCIES = \
 	$(TARGET_sysconfdir)/filesystems \
 	$(TARGET_sysconfdir)/fstab \
 	$(TARGET_sysconfdir)/group \
+	$(TARGET_sysconfdir)/hostname \
 	$(TARGET_sysconfdir)/hosts \
 	$(TARGET_sysconfdir)/issue.net \
 	$(TARGET_sysconfdir)/model \
