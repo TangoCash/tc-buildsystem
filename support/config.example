@@ -125,6 +125,10 @@ MAINTAINER = $(shell whoami)
 # add own packages to image
 #BS_PACKAGES_OWN = pkg01 pkg02
 
+# leave packages of 'make image' out (list: 'make print-image-packages';
+# kernel, blobs, neutrino, busybox, sysvinit, ... are always built)
+#BS_PACKAGES_SKIP = pkg01 pkg02
+
 # -----------------------------------------------------------------------------
 
 # Create debug-image. Not useful in real life.

@@ -33,6 +33,11 @@ Host-Compiler für den V8-Snapshot von 32-Bit-ARM
 apt-get install g++-multilib
 ```
 
+Für das Konfigurationsmenü (`make menuconfig`)
+```bash
+apt-get install whiptail
+```
+
 ## 1) Buildsystem initialisieren
 ```bash
 git clone https://github.com/TangoCash/tc-buildsystem.git
@@ -54,6 +59,12 @@ ln -s $HOME/archives download
 make local-files
 ```
 config.local auf die eigenen Bedürfnisse anpassen. BOXMODEL **muss** gesetzt werden!
+
+Alternativ im Menü (benötigt whiptail): BOXMODEL, Flavour, Optionen, Plugins
+und die Pakete des Images (abwählen oder eigene hinzufügen)
+```bash
+make menuconfig
+```
 
 ## 4) Buildumgebung prüfen
 ```bash

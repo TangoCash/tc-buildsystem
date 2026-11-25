@@ -162,6 +162,7 @@ printenv:
 	@echo "BOXTYPE:         $(BOXTYPE)"
 	@echo "BOXSERIES:       $(BOXSERIES)"
 	@echo "BOXMODEL:        $(BOXMODEL)"
+	@echo "IMAGE_LAYOUT:    $(IMAGE_LAYOUT)"
 	@$(call draw_line);
 	@echo ""
 	@echo "'make help' lists useful targets."
@@ -272,6 +273,7 @@ $(foreach p,$(PKG_MK_PREREQUISITES),\
 endif
 
 include make/ni.mk
+-include make/menuconfig.mk
 
 # for your local extensions, e.g. special plugins or similar ...
 -include ./Makefile.local

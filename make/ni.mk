@@ -3,91 +3,105 @@
 #
 # -----------------------------------------------------------------------------
 
+# packages of the image, depending on the box; config.local may leave some
+# out (BS_PACKAGES_SKIP, but not those of NI_IMAGE_REQUIRED) and add own ones
+# (BS_PACKAGES_OWN); 'make print-image-packages' lists them (menuconfig)
+NI_IMAGE_REQUIRED = kernel blobs neutrino busybox sysvinit autofs sysconfdir init-scripts
+
+NI_IMAGE_PACKAGES = \
+	neutrino-plugins \
+	doscam-webif-skin \
+	logo-addon \
+	fbshot \
+	chrony \
+	tzdata \
+	smartmontools \
+	sg3_utils \
+	nano \
+	hd-idle \
+	hdparm \
+	nfs-utils \
+	e2fsprogs \
+	ntfs-3g \
+	exfat-utils \
+	dosfstools \
+	mtd-utils \
+	ushare \
+	xupnpd \
+	inadyn \
+	samba \
+	vsftpd \
+	dropbear \
+	busybox \
+	sysvinit \
+	coreutils \
+	procps-ng \
+	wpa_supplicant \
+	wget \
+	streamripper \
+	lua-cjson
+# djmount: not built (was "#make djmount")
+ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd2 hd5x hd6x vusolo4k vuduo4k vuduo4kse vuultimo4k vuzero4k vuuno4k vuuno4kse vuduo))
+NI_IMAGE_PACKAGES += \
+	channellogos \
+	fart \
+	sl \
+	jq \
+	less \
+	parted \
+	openvpn \
+	openssh \
+	ethtool \
+	f2fs-tools
+  ifneq ($(BOXMODEL),kronos_v2)
+NI_IMAGE_PACKAGES += \
+	links \
+	bash \
+	iperf \
+	minicom \
+	minidlna \
+	mc \
+	dvbsnoop \
+	dvb-apps
+  endif
+  ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd5x hd6x vusolo4k vuduo4k vuduo4kse vuultimo4k vuzero4k vuuno4k vuuno4kse vuduo))
+NI_IMAGE_PACKAGES += \
+	irqbalance \
+	udpxy \
+	evtest \
+	gptfdisk \
+	rsync \
+	ofgwrite \
+	aio-grab \
+	minisatip \
+	xfsprogs \
+	libxslt \
+	xz \
+	sysstat \
+	davfs2 \
+	python3 \
+	python-pip \
+	python-streamlink \
+	python-yt-dlp \
+	openhbbtvbrowser
+  endif
+  ifeq ($(DEBUG),yes)
+NI_IMAGE_PACKAGES += \
+	strace \
+	valgrind \
+	gdb
+  endif
+endif
+
+NI_IMAGE_BUILD = $(filter-out $(filter-out $(NI_IMAGE_REQUIRED),$(BS_PACKAGES_SKIP)),$(NI_IMAGE_PACKAGES))
+
 image \
 ni-image:
 	@echo "starting 'make $(@)' build with "$(PARALLEL_JOBS)" threads!"
 	$(MAKE) kernel
 	$(MAKE) blobs
 	$(MAKE) neutrino
-	$(MAKE) neutrino-plugins
-	$(MAKE) doscam-webif-skin
-	$(MAKE) logo-addon
-	$(MAKE) fbshot
-	$(MAKE) chrony
-	$(MAKE) tzdata
-	$(MAKE) smartmontools
-	$(MAKE) sg3_utils
-	$(MAKE) nano
-	$(MAKE) hd-idle
-	$(MAKE) hdparm
-	$(MAKE) nfs-utils
-	$(MAKE) e2fsprogs
-	$(MAKE) ntfs-3g
-	$(MAKE) exfat-utils
-	$(MAKE) dosfstools
-	$(MAKE) mtd-utils
-	#make djmount
-	$(MAKE) ushare
-	$(MAKE) xupnpd
-	$(MAKE) inadyn
-	$(MAKE) samba
-	$(MAKE) vsftpd
-	$(MAKE) dropbear
-	$(MAKE) busybox
-	$(MAKE) sysvinit
-	$(MAKE) coreutils
-	$(MAKE) procps-ng
-	$(MAKE) wpa_supplicant
-	$(MAKE) wget
-	$(MAKE) streamripper
-	$(MAKE) lua-cjson
-ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd2 hd5x hd6x vusolo4k vuduo4k vuduo4kse vuultimo4k vuzero4k vuuno4k vuuno4kse vuduo))
-	$(MAKE) channellogos
-	$(MAKE) fart
-	$(MAKE) sl
-	$(MAKE) jq
-	$(MAKE) less
-	$(MAKE) parted
-	$(MAKE) openvpn
-	$(MAKE) openssh
-	$(MAKE) ethtool
-	$(MAKE) f2fs-tools
-  ifneq ($(BOXMODEL),kronos_v2)
-	$(MAKE) links
-	$(MAKE) bash
-	$(MAKE) iperf
-	$(MAKE) minicom
-	$(MAKE) minidlna
-	$(MAKE) mc
-	$(MAKE) dvbsnoop
-	$(MAKE) dvb-apps
-  endif
-  ifeq ($(BOXSERIES),$(filter $(BOXSERIES),hd5x hd6x vusolo4k vuduo4k vuduo4kse vuultimo4k vuzero4k vuuno4k vuuno4kse vuduo))
-	$(MAKE) irqbalance
-	$(MAKE) udpxy
-	$(MAKE) evtest
-	$(MAKE) gptfdisk
-	$(MAKE) rsync
-	$(MAKE) ofgwrite
-	$(MAKE) aio-grab
-	$(MAKE) minisatip
-	$(MAKE) xfsprogs
-	$(MAKE) libxslt
-	$(MAKE) xz
-	$(MAKE) sysstat
-	$(MAKE) davfs2
-	$(MAKE) python3
-	$(MAKE) python-pip
-	$(MAKE) python-streamlink
-	$(MAKE) python-yt-dlp
-	$(MAKE) openhbbtvbrowser
-  endif
-  ifeq ($(DEBUG),yes)
-	$(MAKE) strace
-	$(MAKE) valgrind
-	$(MAKE) gdb
-  endif
-endif
+	$(foreach p,$(NI_IMAGE_BUILD),$(MAKE) $(p)$(sep))
 	$(MAKE) autofs
 	$(MAKE) sysconfdir
 	$(MAKE) init-scripts
@@ -100,6 +114,12 @@ endif
 	$(MAKE) rootfs
 	$(MAKE) flash-image
 	@$(MAKE) done
+
+print-image-packages:
+	@echo "required: $(NI_IMAGE_REQUIRED)"
+	@echo "packages: $(NI_IMAGE_PACKAGES)"
+	@echo "skip: $(BS_PACKAGES_SKIP)"
+	@echo "own: $(BS_PACKAGES_OWN)"
 
 # -----------------------------------------------------------------------------
 
@@ -129,5 +149,6 @@ personalized-image:
 # -----------------------------------------------------------------------------
 
 PHONY += image ni-image
+PHONY += print-image-packages
 PHONY += images ni-images
 PHONY += personalized-image
