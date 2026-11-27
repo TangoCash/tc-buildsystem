@@ -74,6 +74,10 @@ service syslogd start
 
 service sysctl start
 
+# bring eth0 up now: the link negotiation (~3 s) then runs while the
+# modules load, and ifup in "service network start" finds the link ready
+ip link set eth0 up 2>/dev/null
+
 # load modules / create nodes
 load_module extra/%(BOXMODEL)_1.ko
 load_module extra/%(BOXMODEL)_2.ko
