@@ -19,6 +19,9 @@ NEUTRINO_SITE_METHOD = ni-git
 NEUTRINO_DEPENDENCIES = ffmpeg freetype libcurl libdvbsi libjpeg-turbo libsigc \
 	openssl openthreads zlib
 
+# WebP pictures in the picture viewer (configure finds it with pkg-config)
+NEUTRINO_DEPENDENCIES += libwebp
+
 NEUTRINO_SRC_DIR = $(SOURCE_DIR)/$(NEUTRINO_DIR)
 NEUTRINO_OBJ_DIR = $(BUILD_DIR)/$(NEUTRINO_DIR)-obj
 
