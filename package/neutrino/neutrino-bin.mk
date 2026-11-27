@@ -18,35 +18,17 @@ define NEUTRINO_BIN_INSTALL
 endef
 NEUTRINO_BIN_INDIVIDUAL_HOOKS += NEUTRINO_BIN_INSTALL
 
-ifneq ($(DEBUG),yes)
-define NEUTRINO_BIN_STRIP
-	$(TARGET_STRIP) $(TARGET_bindir)/neutrino
+# $(TARGET_DIR) stays unstripped: later packages link against its libraries
+# and static archives, and gdb wants the symbols. Every build of neutrino-bin
+# leaves a clean, stripped copy of it in $(ROOTFS_DIR) (.build/rootfs, or
+# its linuxrootfs1 with IMAGE_LAYOUT=subdirboot), made the way 'make rootfs'
+# makes it: copy, rootfs-cleanup, rootfs-strip (no strip with DEBUG=yes)
+define NEUTRINO_BIN_ROOTFS
+	rm -rf $(ROOTFS_DIR)
+	$(MAKE) rootfs-cleanup rootfs-strip
+	@$(call MESSAGE,"Stripped copy of $(TARGET_DIR): $(ROOTFS_DIR)")
 endef
-NEUTRINO_BIN_TARGET_FINALIZE_HOOKS += NEUTRINO_BIN_STRIP
-
-# the rootfs-strip target only runs for full image builds; make sure every
-# build of neutrino-bin leaves a fully stripped install tree (same recipe and
-# exclusions as target-rootfs.mk, applied to $(TARGET_DIR))
-define NEUTRINO_BIN_STRIP_ROOTFS
-	@echo "Stripping installed binaries and libraries";
-	for dir in $(base_bindir) $(base_sbindir) $(bindir) $(sbindir) $(libexecdir) /usr/share/tuxbox/neutrino/plugins; do \
-		$(INSTALL) -d $(TARGET_DIR)$${dir}; \
-		find $(TARGET_DIR)$${dir} \
-			-type f -print0 | xargs -n 128 -0 $(TARGET_STRIP) || true; \
-	done
-	for dir in $(base_libdir) $(libdir); do \
-		$(INSTALL) -d $(TARGET_DIR)$${dir}; \
-		find $(TARGET_DIR)$${dir} \( \
-				-path $(TARGET_DIR)/lib/libnexus.so -o \
-				-path $(TARGET_DIR)/lib/libnxpl.so -o \
-				-path $(TARGET_DIR)/lib/libv3ddriver.so -o \
-				\
-				-path $(TARGET_DIR)/lib/modules \) -prune -o \
-			-type f -print0 | xargs -n 128 -0 $(TARGET_STRIP) || true; \
-	done
-endef
-NEUTRINO_BIN_TARGET_FINALIZE_HOOKS += NEUTRINO_BIN_STRIP_ROOTFS
-endif
+NEUTRINO_BIN_TARGET_FINALIZE_HOOKS += NEUTRINO_BIN_ROOTFS
 
 neutrino-bin: | $(TARGET_DIR)
 	$(call virtual-package,$(PKG_NO_TOUCH))
